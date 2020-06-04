@@ -5,14 +5,20 @@ import serial
 import time
 from gpiozero import LED
 
+# Defines serial port trough which communication with the arduino will be established
 ArduinoYunSerial = serial.Serial('/dev/tty.usbmodem14201',9600)   
 
 def main():
+    # Reads first line in order to assure coordination to avoid overlap in the port
     print(ArduinoYunSerial.readline())
+    
     while(True):
+        # Fetches new mails
         new_mails = get_new_mails(sys.argv[1], sys.argv[2])
+        # Splits and counts the amount of new mails
         num_new_mails = count_mails(new_mails)
 
+        # Returns a boolean according to the need of notification
         if (notify(num_new_mails)):
             print('1')
             ArduinoYunSerial.write(b'1')
